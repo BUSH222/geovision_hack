@@ -1,9 +1,10 @@
 import numpy as np
 import cv2
 from pil_converter import pil_convert
+import os
 
 
-pil_img = pil_convert('well_3_old.jpg')
+pil_img = pil_convert('DATA/well_3_old.jpg')
 img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
 h, w = img.shape[:2]
 mask = np.zeros((h, w), np.uint8)
@@ -13,7 +14,7 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
 # Search for contours and select the biggest one and draw it on mask
-_, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 cnt = max(contours, key=cv2.contourArea)
 cv2.drawContours(mask, [cnt], 0, 255, -1)
 
@@ -24,7 +25,5 @@ res = cv2.bitwise_and(img, img, mask=mask)
 black = np.where(res == 0)
 res[black[0], black[1], :] = [255, 255, 255]
 
-# Display the image
-cv2.imshow('img', res)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+cv2.imwrite(os.path.join(os.getcwd(), 'DATA/OUT/', 'res.png'), res)  # horrible, replace later
