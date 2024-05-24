@@ -4,7 +4,19 @@ import numpy as np
 from PIL import Image
 
 
-def process_image(image, color_range, use_hsv=False):
+def split_hue(hue, delta):
+    hue_minus_delta = hue - delta
+    hue_plus_delta = hue + delta
+    hue_split1 = hue
+    if hue_minus_delta < 0:
+        hue_minus_delta += 180
+        hue_split1 = 180
+    if hue_plus_delta > 180:
+        hue_plus_delta -= 180
+    return hue_minus_delta, hue_split1, hue_split1-180, hue_plus_delta
+
+
+def graph_preprocess(image, color_range=[], use_hsv=False, approx_hue=0, delta_hue=40):
     if not use_hsv:
         image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
         (R1, G1, B1), (R2, G2, B2) = color_range
@@ -30,11 +42,13 @@ def process_image(image, color_range, use_hsv=False):
         return cleaned_image
     else:
         image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2HSV)
-        (R1, G1, B1), (R2, G2, B2) = color_range
-        lower_range = np.array([R1, G1, B1])
-        upper_range = np.array([R2, G2, B2])
-        lower_range2 = np.array([180-R2, G1, B1])
-        upper_range2 = np.array([180-R1, G2, B2])
+        (G1, G2), (B1, B2) = (70, 255), (70, 255)
+        hue1_low, hue1_high, hue2_low, hue2_high = split_hue(approx_hue, delta_hue)
+        print(split_hue(approx_hue, delta_hue))
+        lower_range = np.array([hue2_low, G1, B1])
+        upper_range = np.array([hue2_high, G2, B2])
+        lower_range2 = np.array([hue1_low, G1, B1])
+        upper_range2 = np.array([hue1_high, G2, B2])
         mask = cv2.inRange(image, lower_range, upper_range)
         mask2 = cv2.inRange(image, lower_range2, upper_range2)
         image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
@@ -46,7 +60,7 @@ def process_image(image, color_range, use_hsv=False):
 
 
 if __name__ == "__main__":
-    prepro = process_image(pil_convert('DATA/well_3_old.jpg'), [[0, 70, 70], [40, 255, 255]], use_hsv=True)
+    prepro = graph_preprocess(pil_convert('DATA/well_3_old.jpg'), use_hsv=True, approx_hue=0, delta_hue=40)
     prepro.save('DATA/OUT/res0.png')
 
     # prepro2 = process_image(pil_convert('DATA/well_3_old.jpg'), [[0, 0, 0], [100, 100, 100]])
