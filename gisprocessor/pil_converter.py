@@ -1,6 +1,6 @@
 from PIL import Image
 import os
-import fitz
+import fitz  # pip install PyMuPDF
 
 
 def pil_convert(path, dpi=300):
