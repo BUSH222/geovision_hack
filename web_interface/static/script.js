@@ -5,10 +5,10 @@ function printFiles(e) {
             if (files.length > 0) {        // Проверяем, были ли выбраны файлы
                 Array.from(files).forEach((file, index) => { // Преобразуем FileList в массив для удобства работы
                     console.log(file);
-                    fileInfoHtml += "<p><strong><font style='color: white'>File " + (index + 1) + ": " + file.name + "</font></strong></p>";
-                    fileInfoHtml += "<p><font style='color: white'>Type: " + file.type || "n</font>/a</p>";
-                    fileInfoHtml += "<p><font style='color: white'>Size: " + file.size + " bytes</font></p>";
-                    fileInfoHtml += "<p><font style='color: white'>Changed on: " +  file.lastModifiedDate.toLocaleDateString() + "</font></p>";
+                    fileInfoHtml += "<p><strong><font style='color: black'>File " + (index + 1) + ": " + file.name + "</font></strong></p>";
+                    fileInfoHtml += "<p><font style='color: black'>Type: " + file.type || "n</font>/a</p>";
+                    fileInfoHtml += "<p><font style='color: black'>Size: " + file.size + " bytes</font></p>";
+                    fileInfoHtml += "<p><font style='color: black'>Changed on: " +  file.lastModifiedDate.toLocaleDateString() + "</font></p>";
                     fileInfoHtml += "<hr>"; // Разделитель между информацией о файлах
                 });
 
@@ -20,30 +20,22 @@ function printFiles(e) {
 
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Предотвращаем стандартное действие формы
-    
+
             // Создаем пустой объект для хранения информации о файлах
             var formData = {};
-    
+
             // Собираем информацию о файлах в объект formDat
             Array.from(this.elements.namedItem('file').files).forEach((file, index) => {
             formData[`file${index}`] = file;
             });
-    
+
             // Отправляем данные на сервер в формате JSON
-            fetch('/upload', {
+            res = fetch('/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                // Обработка успешного ответа от сервера
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                // Обработка ошибок
+                body: JSON.stringify({'data':this.elements.namedItem('fileInfoHtml')})
+
             });
         });
