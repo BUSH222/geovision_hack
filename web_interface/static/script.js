@@ -32,6 +32,6 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'data':this.elements.namedItem('fileInfoHtml')})
+        body: JSON.stringify({ filesInfo: selectedFilesInfo }) // Передача всей информации о файлах в виде JSON
     });
 });
