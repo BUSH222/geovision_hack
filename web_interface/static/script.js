@@ -18,12 +18,32 @@ function printFiles(e) {
             }
         }
 
-        // Добавление обработчика события нажатия на кнопку
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Предотвращаем стандартное действие формы
-
-            // Здесь может быть логика обработки файлов перед отправкой на сервер
-
-            // Продолжаем отправку формы
-            this.submit(); // Используем метод submit формы для отправки данных на сервер
+    
+            // Создаем пустой объект для хранения информации о файлах
+            var formData = {};
+    
+            // Собираем информацию о файлах в объект formDat
+            Array.from(this.elements.namedItem('file').files).forEach((file, index) => {
+            formData[`file${index}`] = file;
+            });
+    
+            // Отправляем данные на сервер в формате JSON
+            fetch('/upload', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Обработка успешного ответа от сервера
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Обработка ошибок
+            });
         });
