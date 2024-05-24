@@ -4,25 +4,23 @@ import numpy as np
 from PIL import Image
 
 
-def process_image(img, color_range):
-    (R1, G1, B1), (R2, G2, B2) = color_range
-    data = img.load()
-    for y in range(img.height):
-        for x in range(img.width):
-            r, g, b = data[x, y]
-            if not (R1 <= r <= R2 and G1 <= g <= G2 and B1 <= b <= B2) or (r < g+20 and r < b+20):
-                # Change the color to black
-                data[x, y] = (0, 0, 0)
-    return img
-
-
-def remove_noise(image):
+def process_image(image, color_range):
     image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+
+    (R1, G1, B1), (R2, G2, B2) = color_range
+    lower_range = np.array([B1, G1, R1], dtype=np.uint8)
+    upper_range = np.array([B2, G2, R2], dtype=np.uint8)
+
+    mask = cv2.inRange(image, lower_range, upper_range)
+    mask_inv = cv2.bitwise_not(mask)
+
+    image[mask_inv > 0] = [255, 255, 200]
+
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    #_, binary = cv2.threshold(gray, 0, 0, cv2.THRESH_BINARY)
+    # _, binary = cv2.threshold(gray, 0, 0, cv2.THRESH_BINARY)
     contours, _ = cv2.findContours(gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    large_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 10]
+    large_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 50]
     mask = np.zeros_like(gray)
     cv2.drawContours(mask, large_contours, -1, (255), thickness=cv2.FILLED)
 
@@ -35,4 +33,6 @@ def remove_noise(image):
 
 prepro = process_image(pil_convert('DATA/well_3_old.jpg'), [[130, 70, 70], [200, 160, 160]])
 prepro.save('DATA/OUT/res0.png')
-remove_noise(prepro).save('DATA/OUT/res.png')
+
+prepro2 = process_image(pil_convert('DATA/well_3_old.jpg'), [[0, 0, 0], [100, 100, 100]])
+prepro2.save('DATA/OUT/res1.png')
