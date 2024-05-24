@@ -1,29 +1,21 @@
-import numpy as np
-import cv2
 from pil_converter import pil_convert
-import os
 
 
-pil_img = pil_convert('DATA/well_3_old.jpg')
-img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
-h, w = img.shape[:2]
-mask = np.zeros((h, w), np.uint8)
+def process_image(img, color_range):
+    (R1, G1, B1), (R2, G2, B2) = color_range
+    data = img.load()
 
-# Transform to gray colorspace and threshold the image
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-_, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    # Iterate over each pixel
+    for y in range(img.height):
+        for x in range(img.width):
+            r, g, b = data[x, y]
 
-# Search for contours and select the biggest one and draw it on mask
-contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-cnt = max(contours, key=cv2.contourArea)
-cv2.drawContours(mask, [cnt], 0, 255, -1)
+            # Check if the pixel color is outside the range
+            if not(R1 <= r <= R2 and G1 <= g <= G2 and B1 <= b <= B2) or (r < g+20 and r < b+20):
+                # Change the color to black
+                data[x, y] = (0, 0, 0)
 
-# Perform a bitwise operation
-res = cv2.bitwise_and(img, img, mask=mask)
-
-# Convert black pixels back to white
-black = np.where(res == 0)
-res[black[0], black[1], :] = [255, 255, 255]
+    return img
 
 
-cv2.imwrite(os.path.join(os.getcwd(), 'DATA/OUT/', 'res.png'), res)  # horrible, replace later
+process_image(pil_convert('DATA/well_3_old.jpg'), [[130, 70, 70], [200, 160, 160]]).save('DATA/OUT/res.png')
