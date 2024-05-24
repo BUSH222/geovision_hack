@@ -25,6 +25,18 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     Array.from(this.elements.namedItem('file').files).forEach((file, index) => {
         formData.append(`file${index}`, file);
     });
+
+    // Сбор информации о файлах в HTML-строку
+    let fileInfoHtml = '';
+    Array.from(this.elements.namedItem('file').files).forEach((file, index) => {
+        fileInfoHtml += `<p><strong>${index + 1}: ${file.name}</strong></p>`;
+        fileInfoHtml += `<p>Type: ${file.type}</p>`;
+        fileInfoHtml += `<p>Size: ${file.size} bytes</p>`;
+        fileInfoHtml += `<p>Last Modified: ${new Date(file.lastModified).toLocaleDateString()}</p>`;
+        fileInfoHtml += '<hr>';
+    });
+
+    // Добавляем HTML-строку с информацией о файлах в FormData
     formData.append('fileInfoHtml', fileInfoHtml);
     // Отправляем данные на сервер в формате JSON
     res = fetch('/', {
