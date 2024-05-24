@@ -1,30 +1,53 @@
-import numpy as np
-import cv2
 from pil_converter import pil_convert
+import cv2
+import numpy as np
+from PIL import Image
 
 
-pil_img = pil_convert('well_3_old.jpg')
-img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
-h, w = img.shape[:2]
-mask = np.zeros((h, w), np.uint8)
+def process_image(image, color_range, use_hsv=False):
+    if not use_hsv:
+        image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+        (R1, G1, B1), (R2, G2, B2) = color_range
+        lower_range = np.array([B1, G1, R1], dtype=np.uint8)
+        upper_range = np.array([B2, G2, R2], dtype=np.uint8)
+        mask = cv2.inRange(image, lower_range, upper_range)
+        mask_inv = cv2.bitwise_not(mask)
 
-# Transform to gray colorspace and threshold the image
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-_, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+        image[mask_inv > 0] = [255, 255, 200]
 
-# Search for contours and select the biggest one and draw it on mask
-_, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-cnt = max(contours, key=cv2.contourArea)
-cv2.drawContours(mask, [cnt], 0, 255, -1)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-# Perform a bitwise operation
-res = cv2.bitwise_and(img, img, mask=mask)
+        # _, binary = cv2.threshold(gray, 0, 0, cv2.THRESH_BINARY)
+        contours, _ = cv2.findContours(gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        large_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > 50]
+        mask = np.zeros_like(gray)
+        cv2.drawContours(mask, large_contours, -1, (255), thickness=cv2.FILLED)
 
-# Convert black pixels back to white
-black = np.where(res == 0)
-res[black[0], black[1], :] = [255, 255, 255]
+        cleaned_image = cv2.bitwise_and(image, image, mask=mask)
 
-# Display the image
-cv2.imshow('img', res)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+        cleaned_image = Image.fromarray(cv2.cvtColor(cleaned_image, cv2.COLOR_BGR2RGB))
+
+        return cleaned_image
+    else:
+        image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2HSV)
+        (R1, G1, B1), (R2, G2, B2) = color_range
+        lower_range = np.array([R1, G1, B1])
+        upper_range = np.array([R2, G2, B2])
+        lower_range2 = np.array([180-R2, G1, B1])
+        upper_range2 = np.array([180-R1, G2, B2])
+        mask = cv2.inRange(image, lower_range, upper_range)
+        mask2 = cv2.inRange(image, lower_range2, upper_range2)
+        image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
+        mask_inv1 = cv2.bitwise_not(mask)
+        mask_inv2 = cv2.bitwise_not(mask2)
+        mask_inv = cv2.bitwise_and(mask_inv1, mask_inv2)
+        image[mask_inv > 0] = [200, 255, 255]
+        return Image.fromarray(image)
+
+
+if __name__ == "__main__":
+    prepro = process_image(pil_convert('DATA/well_3_old.jpg'), [[0, 70, 70], [40, 255, 255]], use_hsv=True)
+    prepro.save('DATA/OUT/res0.png')
+
+    # prepro2 = process_image(pil_convert('DATA/well_3_old.jpg'), [[0, 0, 0], [100, 100, 100]])
+    # prepro2.save('DATA/OUT/res1.png')
