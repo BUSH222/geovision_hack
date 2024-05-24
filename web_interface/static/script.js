@@ -28,7 +28,8 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
     Array.from(this.elements.namedItem('file').files).forEach((file, index) => {
         formData.append(`file${index}`, file); // Используем append для добавления файлов в FormData
     });
-
+    // Добавляем дополнительные данные в FormData, если они есть
+    formData.append('fileInfoHtml', this.elements.namedItem('fileInfoHtml').value);
     // Отправляем данные на сервер в формате JSON
     res = fetch('/', {
         method: 'POST',
