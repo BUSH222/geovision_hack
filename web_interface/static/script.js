@@ -21,15 +21,11 @@ function printFiles(e) {
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Предотвращаем стандартное действие формы
 
-    // Создаем объект FormData для хранения информации о файлах
     var formData = new FormData();
-
-    // Собираем информацию о файлах в объект FormData
     Array.from(this.elements.namedItem('file').files).forEach((file, index) => {
-        formData.append(`file${index}`, file); // Используем append для добавления файлов в FormData
+        formData.append(`file${index}`, file);
     });
-    // Добавляем дополнительные данные в FormData, если они есть
-    formData.append('fileInfoHtml', this.elements.namedItem('fileInfoHtml').value);
+    formData.append('fileInfoHtml', fileInfoHtml);
     // Отправляем данные на сервер в формате JSON
     res = fetch('/', {
         method: 'POST',
