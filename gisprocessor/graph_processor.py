@@ -1,8 +1,10 @@
 import numpy as np
 import cv2
+from pil_converter import pil_convert
 
-# Read the image and create a blank mask
-img = cv2.imread('graph.png')
+
+pil_img = pil_convert('well_3_old.jpg')
+img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
 h, w = img.shape[:2]
 mask = np.zeros((h, w), np.uint8)
 

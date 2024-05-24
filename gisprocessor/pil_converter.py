@@ -6,7 +6,7 @@ import fitz  # pip install PyMuPDF
 def pil_convert(path, dpi=300):
     ext = os.path.splitext(path)[-1].lower()
     if ext == '.png' or ext == '.jpg':
-        return Image(path)
+        return Image.open(path)
     elif ext == '.pdf':
         doc = fitz.open(path)
         page = doc.load_page(0)
@@ -20,4 +20,3 @@ def pil_convert(path, dpi=300):
 
 if __name__ == "__main__":
     print(pil_convert('DATA/well_5.pdf'))
-    
