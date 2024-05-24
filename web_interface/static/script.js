@@ -5,10 +5,10 @@ function printFiles(e) {
             if (files.length > 0) {        // Проверяем, были ли выбраны файлы
                 Array.from(files).forEach((file, index) => { // Преобразуем FileList в массив для удобства работы
                     console.log(file);
-                    fileInfoHtml += "<p><strong><font style='color: black'>File " + (index + 1) + ": " + file.name + "</font></strong></p>";
-                    fileInfoHtml += "<p><font style='color: black'>Type: " + file.type || "n</font>/a</p>";
-                    fileInfoHtml += "<p><font style='color: black'>Size: " + file.size + " bytes</font></p>";
-                    fileInfoHtml += "<p><font style='color: black'>Changed on: " +  file.lastModifiedDate.toLocaleDateString() + "</font></p>";
+                    fileInfoHtml += "<p><strong><font style='color: white'>File " + (index + 1) + ": " + file.name + "</font></strong></p>";
+                    fileInfoHtml += "<p><font style='color: white'>Type: " + file.type || "n</font>/a</p>";
+                    fileInfoHtml += "<p><font style='color: white'>Size: " + file.size + " bytes</font></p>";
+                    fileInfoHtml += "<p><font style='color: white'>Changed on: " +  file.lastModifiedDate.toLocaleDateString() + "</font></p>";
                     fileInfoHtml += "<hr>"; // Разделитель между информацией о файлах
                 });
 
