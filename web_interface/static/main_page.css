@@ -38,8 +38,7 @@ body {
         width: 50%;
         text-align: center;
         padding: 20px;
-
-        margin-bottom: 1px;
+        margin-bottom: -150px;
     }
 .content1 {
         width: 100%;
@@ -61,7 +60,7 @@ body {
   background-color: rgba(22,22,22,0.4);
   border-bottom: 3px solid rgba(0,0,0,0.4);
   -webkit-transition: height 0.3s;
-
+}
   .container {
     width: 90%;
     margin: 0 auto;
