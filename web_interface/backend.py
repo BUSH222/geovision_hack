@@ -8,7 +8,7 @@ import fitz
 import shutil
 from gisprocessor import GeneralConverter
 
-UPLOAD_FOLDER = r'D:\Новая папка'
+UPLOAD_FOLDER = os.path.abspath('DATA')
 ALLOWED_EXTENSIONS = {'txt', 'png', 'jpg', 'jpeg','gif'}
 
 app = Flask(__name__)
@@ -43,7 +43,7 @@ def upload_file():
             if '.txt' in filename:
                 config.append(os.path.join(UPLOAD_FOLDER,filename))
             else:
-                res = GeneralConverter(os.path.join(UPLOAD_FOLDER,filename),'D:\Новая папка (2)')
+                res = GeneralConverter(os.path.join(UPLOAD_FOLDER,filename),os.path.abspath('DATA'))
                 res.load_from_json(config[0])
                 res.run()
 
