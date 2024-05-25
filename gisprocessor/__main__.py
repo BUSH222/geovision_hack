@@ -1,7 +1,7 @@
 from graph_processor import graph_preprocess, pil_convert
 from digitizer import digitizer
 from las_assembler import las_assembler
-
+import json
 
 class GeneralConverter:
     def __init__(self, path, out_path) -> None:
@@ -50,6 +50,13 @@ class GeneralConverter:
     def _ensure_info_is_loaded(self):
         return bool(self.path) and self.graph_data_loaded and self.well_data_loaded
 
+    def read_json_file(file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        lst = []
+        for key, value in data.items():
+            lst.append((key, value))
+
     def run(self):
         assert self._ensure_info_is_loaded()
         for key, value in self.graph_data.items():
@@ -63,3 +70,4 @@ class GeneralConverter:
                                           self.b[0], self.b[1], self.b[2], self.b[3])
         lasfile = las_assembler(self.graph_data, self.well_info, self.findata)
         lasfile.write(f'{self.out_path}/out.las')
+

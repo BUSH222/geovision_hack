@@ -29,7 +29,9 @@ def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, val
     dify = coordsy2[1] - coordsy1[1]
     difvy = valuey2 - valuey1
     scaly, _ = get_scale_from_coords(coordsy1, coordsy2, valuey1, valuey2)
-    step = round(scaly * 0.2)
+    stepy = round(scaly * 0.2)
+    scalx, _ = get_scale_from_coords(coordsy1, coordsy2, valuex1, valuex2)
+    stepx = round(scalx * 0.2)
     val0 = valuey1
     # Построчное прохождение по пикселям изображения
     resblack = []
@@ -38,10 +40,10 @@ def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, val
     # for y axis
     while y0 > coordsy2[1]:
         points.append(y0)
-        y0 -= step
+        y0 -= stepy
         cnt = 0
         for x in range(coordsx1[0], coordsx2[0]):
-            pixel = image[x, y]
+            pixel = image[x, y0]
             if pixel == 0:
                 blackx.append(x)
                 cnt += 1
@@ -53,7 +55,7 @@ def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, val
     pointsx = []
     while x0 < coordsy2[0]:
         points.append(x0)
-        x0 -= step
+        x0 -= stepx
         cnt = 0
     return resblack
     # for y in range(y0)[::-1]:
