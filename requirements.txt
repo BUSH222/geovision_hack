@@ -1,1 +1,8 @@
-
+PyMuPDF==1.24.4
+Flask==2.2.5
+lasio==0.31
+numpy==1.26.4
+opencv_python==4.9.0.80
+Pillow==10.3.0
+pytesseract==0.3.10
+Werkzeug==2.3.0

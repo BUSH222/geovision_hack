@@ -1,0 +1,43 @@
+{
+    "image":"well_5.jpg",
+    "graphs": [
+        {
+            "number":1,
+            "color": [[0, 70, 255], [0, 70, 255]],
+            "use_hsv": true,
+            "approx_hue":0,
+            "delta_hue":40,
+            "denoise":0,
+            "scale_type":1,
+            "graph_text_data":["A2м", "HJ=12,0", "Укар 1,87"]
+        },
+        {
+            "number":2,
+            "color": [[100, 100, 100], [200, 200, 200]],
+            "use_hsv": false,
+            "approx_hue":0,
+            "delta_hue":40,
+            "denoise":0,
+            "scale_type":1,
+            "graph_text_data":["A2м", "HJ=12,0", "Укар 1,87"]
+        }
+    ],
+    "well_info": [
+        ["STRT", ".M", 1990, "Start depth"],
+        ["STOP", ".M", 3200, "Stop depth"],
+        ["STEP", ".M", 0.2000, "Step"], 
+        ["NULL", ".", -9999, "Null value"]
+    ],
+    "coordinates": [
+        {
+            "number":1,
+            "x":[[647, 418],[887, 418], 0, 8],
+            "y":[[598, 451],[598, 7624], 1990, 3200]
+        },
+        {
+            "number":2,
+            "x":[[647, 418],[887, 418], 0, 8],
+            "y":[[598, 451],[598, 7624], 1990, 3200]
+        }
+    ]
+}
