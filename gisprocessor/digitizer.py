@@ -1,4 +1,3 @@
-from PIL import Image
 import cv2
 import numpy as np
 
@@ -21,26 +20,22 @@ def get_scale_from_coords(coords1, coords2, value1, value2, log=False, convert_n
             return x1, y1*scale*convert_number
 
 
-def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, valuey1, valuey2):  # image is already a PIL image, extracted from graph_processor
-    image = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
-    height, width = img.shape
+def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, valuey1, valuey2):
+    image = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2GRAY)
     x0 = coordsy1[0]
     y0 = coordsy1[1]
-    dify = coordsy2[1] - coordsy1[1]
-    difvy = valuey2 - valuey1
     scaly, _ = get_scale_from_coords(coordsy1, coordsy2, valuey1, valuey2)
     stepy = round(scaly * 0.2)
     scalx, _ = get_scale_from_coords(coordsy1, coordsy2, valuex1, valuex2)
     stepx = round(scalx * 0.2)
-    val0 = valuey1
     # Построчное прохождение по пикселям изображения
     resblack = []
     points = []
     blackx = []
     # for y axis
-    while y0 > coordsy2[1]:
+    while y0 < coordsy2[1]:
         points.append(y0)
-        y0 -= stepy
+        y0 += stepy
         cnt = 0
         for x in range(coordsx1[0], coordsx2[0]):
             pixel = image[x, y0]
@@ -52,10 +47,9 @@ def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, val
         else:
             resblack.append(y0, sum(blackx)/cnt)
     # for x axis
-    pointsx = []
-    while x0 < coordsy2[0]:
+    while x0 > coordsy2[0]:
         points.append(x0)
-        x0 -= stepx
+        x0 += stepx
         cnt = 0
     return resblack
     # for y in range(y0)[::-1]:

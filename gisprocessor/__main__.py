@@ -3,6 +3,7 @@ from digitizer import digitizer
 from las_assembler import las_assembler
 import json
 
+
 class GeneralConverter:
     def __init__(self, path, out_path) -> None:
         self.image = pil_convert(path)
@@ -48,22 +49,31 @@ class GeneralConverter:
         self.start_axis_coords[str(number)+axis] = [coords1, coords2, value1, value2]
 
     def _ensure_info_is_loaded(self):
-        return bool(self.path) and self.graph_data_loaded and self.well_data_loaded
+        return bool(self.out_path) and self.graph_data_loaded and self.well_data_loaded
 
-    def read_json_file(file_path):
+    def load_from_json(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
-        lst = []
-        for key, value in data.items():
-            lst.append((key, value))
+        for g in data['graphs']:
+            self.load_graph_data(g['number'], [g['color'], g['use_hsv'], g['approx_hue'], g['delta_hue'],
+                                               g['denoise']], scale_type=g['scale_type'],
+                                 graph_text_data=g['graph_text_data'])
+        for m in data['well_info']:
+            self.load_well_information(m[0], m[1], m[2], m[3])
+
+        for c in data['coordinates']:
+            number = c['number']
+            for key, value in c.items():
+                if key != 'number':
+                    self.load_start_axis_coords_and_values(value[0], value[1], value[2], value[3], key, number)
 
     def run(self):
         assert self._ensure_info_is_loaded()
         for key, value in self.graph_data.items():
             obj = graph_preprocess(self.image, color_range=value[0], use_hsv=value[1],
                                    approx_hue=value[2], delta_hue=value[3], denoise=value[4])
-            self.preprocessed_graph_objects[key] = [obj, key]
-        for graph, key in self.preprocessed_graph_objects:
+            self.preprocessed_graph_objects[key] = obj
+        for key, graph in self.preprocessed_graph_objects.items():
             self.a = self.start_axis_coords[f'{key}x']
             self.b = self.start_axis_coords[f'{key}y']
             self.findata[key] = digitizer(graph, self.a[0], self.a[1], self.a[2], self.a[3],
@@ -71,3 +81,8 @@ class GeneralConverter:
         lasfile = las_assembler(self.graph_data, self.well_info, self.findata)
         lasfile.write(f'{self.out_path}/out.las')
 
+
+if __name__ == "__main__":
+    obj = GeneralConverter('DATA/well_3_old.jpg', 'DATA/OUT/')
+    obj.load_from_json('DATA/well3_config.json')
+    obj.run()
