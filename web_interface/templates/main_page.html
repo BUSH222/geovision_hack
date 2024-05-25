@@ -20,7 +20,7 @@
     <div class="content upload">
         <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
             <label for="file"><font style="color: black">Выберите файлы:</font></label>
-            <input class="btn" type="file" id="file" name="file[]" multiple onchange="saveFileInfo(event)">
+            <input class="btn" type="file" id="file" name="file[]" multiple onchange="handleFileSelection(event)">
             <br><br>
             <div id="fileInfo"></div> <!-- Место для вывода информации о файлах -->
             <button class="btn" type="submit">Обработать</button>
