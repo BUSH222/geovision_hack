@@ -3,15 +3,16 @@ from PIL import Image
 import cv2
 import numpy as np
 from pytesseract import Output
+
+
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+
 def txtconvert(filename):
     img = Image.open(filename)
-
     cust_config = r'--oem 3 --psm 6'
-
     text = pytesseract.image_to_string(img, lang="rus")
     print(text)
-
 
 
 def divide_image_by_black_lines(image_path):
