@@ -1,4 +1,4 @@
-from pil_converter import pil_convert
+from .pil_converter import pil_convert
 import cv2
 import numpy as np
 from PIL import Image

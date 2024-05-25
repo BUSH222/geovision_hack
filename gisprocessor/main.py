@@ -1,6 +1,6 @@
-from graph_processor import graph_preprocess, pil_convert
-from digitizer import digitizer
-from las_assembler import las_assembler
+from .graph_processor import graph_preprocess, pil_convert
+from .digitizer import digitizer
+from .las_assembler import las_assembler
 import json
 
 

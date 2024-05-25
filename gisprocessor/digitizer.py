@@ -53,20 +53,7 @@ def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, val
     # for x axis
     print(resblack)
     return resblack
-    # for y in range(y0)[::-1]:
-    #     cnt = 0
-    #     for x in range(x0 + 70, width):
-    #         pixel = image[y, x]
-    #         if pixel == 0:
-    #             tempx = x
-    #             cnt += 1
-    #     if cnt == 1:
-    #         black.append((tempx, y0))
-    #     elif cnt > 1:
-    #         print("2 точки или более")
-    #     else:
-    #         print("0 точек")
-    # return black, points
+
 
 
 if __name__ == "__main__":
