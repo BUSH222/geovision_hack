@@ -7,6 +7,7 @@ def las_assembler(graph_text, well_info, digitised_data):
 
     # Add depth info
     graph_number, curve_data = list(graph_text.items())[0]
+    print(digitised_data[graph_number])
     mnem, unit, description = curve_data
     data = [k[0] for k in digitised_data[graph_number]]
     well.insert_curve(0, 'DEPTH', data, '.M', 'Depth')

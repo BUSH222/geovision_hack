@@ -31,21 +31,24 @@ def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, val
     # Построчное прохождение по пикселям изображения
     resblack = []
     points = []
-    blackx = []
     # for y axis
     while y0 < coordsy2[1]:
         points.append(y0)
         y0 += stepy
         cnt = 0
+        blackx = []
         for x in range(coordsx1[0], coordsx2[0]):
             pixel = list(image[y0, x])
             if pixel == [0, 0, 0]:
                 blackx.append(x)
                 cnt += 1
+        resx = 1/get_scale_from_coords(coordsx1, coordsx2, valuex1, valuex2)[0]*(round(sum(blackx)/cnt) - coordsx1[0])
+        resy = 1/get_scale_from_coords(coordsy1, coordsy2, valuey1, valuey2)[0]*(y0 - coordsy1[1])
         if cnt == 0:
-            resblack.append([y0, -9999])
+            resblack.append([round(resy, 4), -9999])
         else:
-            resblack.append([y0, round(sum(blackx)/cnt]))
+            # resblack.append([y0, round(sum(blackx)/cnt)])
+            resblack.append([round(resy, 4), round(resx, 4)])
     # for x axis
     print(resblack)
     return resblack
