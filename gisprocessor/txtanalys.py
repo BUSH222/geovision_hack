@@ -1,7 +1,6 @@
 import pytesseract
 from PIL import Image
 import cv2
-import numpy as np
 from pytesseract import Output
 
 
@@ -10,7 +9,7 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessera
 
 def txtconvert(filename):
     img = Image.open(filename)
-    cust_config = r'--oem 3 --psm 6'
+    # cust_config = r'--oem 3 --psm 6'
     text = pytesseract.image_to_string(img, lang="rus")
     print(text)
 
@@ -52,9 +51,11 @@ def divide_image_by_black_lines(image_path):
         print("Черные линии не найдены на изображении.")
         return None, img
 
+
 def get_text_coordinates(image_path, first_coord):
     def contains_three_digits(s):
         return sum(character.isdigit() for character in s) >= 3
+
     def remove_non_digits(s):
         return ''.join(character for character in s if character.isdigit() or character == ".")
     res = dict()
@@ -63,7 +64,7 @@ def get_text_coordinates(image_path, first_coord):
     d = pytesseract.image_to_data(gray, output_type=Output.DICT, lang="rus")
     text_coordinates = []
     stcoords = False
-    temp = 0
+    # temp = 0
     for i in range(len(d['text'])):
         if first_coord in d["text"][i]:
             stcoords = True
