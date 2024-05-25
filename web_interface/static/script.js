@@ -1,49 +1,47 @@
-function printFiles(e) {
-            const files = e.target.files;   // получаем все выбранные файлы
-            let fileInfoHtml = ''; // Переменная для хранения HTML-строки с информацией о файлах
+let selectedFilesInfo = [];
 
-            if (files.length > 0) {        // Проверяем, были ли выбраны файлы
-                Array.from(files).forEach((file, index) => { // Преобразуем FileList в массив для удобства работы
-                    console.log(file);
-                    fileInfoHtml += "<p><strong><font style='color: white'>File " + (index + 1) + ": " + file.name + "</font></strong></p>";
-                    fileInfoHtml += "<p><font style='color: white'>Type: " + file.type || "n</font>/a</p>";
-                    fileInfoHtml += "<p><font style='color: white'>Size: " + file.size + " bytes</font></p>";
-                    fileInfoHtml += "<p><font style='color: white'>Changed on: " +  file.lastModifiedDate.toLocaleDateString() + "</font></p>";
-                    fileInfoHtml += "<hr>"; // Разделитель между информацией о файлах
-                });
-
-                const fileInfoDiv = document.getElementById("fileInfo");
-                fileInfoDiv.innerHTML = ""; // Очищаем предыдущие данные
-                fileInfoDiv.innerHTML = fileInfoHtml; // Выводим информацию о всех выбранных файлах
-            }
-        }
-
-        document.getElementById('uploadForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Предотвращаем стандартное действие формы
-    
-            // Создаем пустой объект для хранения информации о файлах
-            var formData = {};
-    
-            // Собираем информацию о файлах в объект formDat
-            Array.from(this.elements.namedItem('file').files).forEach((file, index) => {
-            formData[`file${index}`] = file;
-            });
-    
-            // Отправляем данные на сервер в формате JSON
-            fetch('/upload', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                // Обработка успешного ответа от сервера
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                // Обработка ошибок
+function saveFileInfo(e) {
+    const files = e.target.files;
+    if (files.length > 0) {
+        Array.from(files).forEach((file, index) => {
+            selectedFilesInfo.push({
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                lastModifiedDate: file.lastModifiedDate,
+                blob: file.slice(0, file.size) // Получаем Blob объект файла
             });
         });
+    }
+}
+
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Преобразование каждого Blob в строку Base64
+    const base64Files = selectedFilesInfo.map(file => {
+        return btoa(
+            new Uint8Array(file.blob).reduce(
+                (data, byte) => data + String.fromCharCode(byte),
+                ''
+            )
+        );
+    });
+
+    // Создание объекта JSON с данными файлов
+    const jsonData = {
+        filesInfo: base64Files
+    };
+
+    // Отправка данных на сервер в формате JSON
+    fetch('/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+    })
+   .then(response => response.json())
+   .then(data => console.log(data))
+   .catch(error => console.error(error));
+});
