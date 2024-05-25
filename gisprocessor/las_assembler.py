@@ -1,5 +1,4 @@
 import lasio
-import numpy as np
 
 
 def las_assembler(graph_text, well_info, digitised_data):
@@ -7,7 +6,7 @@ def las_assembler(graph_text, well_info, digitised_data):
     well = lasio.LASFile()
 
     # Add depth info
-    graph_number, curve_data =  list(graph_text.items())[0]
+    graph_number, curve_data = list(graph_text.items())[0]
     mnem, unit, description = curve_data
     data = [k[0] for k in digitised_data[graph_number]]
     well.insert_curve(0, 'DEPTH', data, '.M', 'Depth')
@@ -22,8 +21,8 @@ def las_assembler(graph_text, well_info, digitised_data):
     for item in well_info:
         mnem, unit, data_type, info = item
         well.params[mnem] = lasio.HeaderItem(unit=unit, value=data_type, descr=info)
-    
-    well.write('output.las', version=2.0)
+
+    return well
 
 
 if __name__ == '__main__':
