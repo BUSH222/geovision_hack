@@ -21,20 +21,22 @@ def get_scale_from_coords(coords1, coords2, value1, value2, log=False, convert_n
             return x1, y1*scale*convert_number
 
 
-def digitizer(img, coords1, coords2, value1, value2):  # image is already a PIL image, extracted from graph_processor
+def digitizer(img, coordsy1, coordsy2, valuey1, valuey2, coordsx1, coordsx2, valuex1, valuex2):  # image is already a PIL image, extracted from graph_processor
     image = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
     height, width = img.shape
-    x0 = coords1[0]
-    y0 = coords1[1]
-    dif = coords2[1] - coords1[1]
-    difv = value2 - value1
-    val0 = value1
+    x0 = coordsy1[0]
+    y0 = coordsy1[1]
+    dify = coordsy2[1] - coordsy1[1]
+    difvy = valuey2 - valuey1
+    scaly, _ = get_scale_from_coords(coordsy1, coordsy2, valuey1, valuey2)
+    step = round(scaly * 0.2)
+    val0 = valuey1
     # Построчное прохождение по пикселям изображения
     black = []
     points = []
-    while y0 > 0:
+    while y0 > coordsy2[1]:
         points.append([y0, val0])
-        y0 -= dif
+        y0 -= step
         val0 += difv
     for y in range(y0)[::-1]:
         cnt = 0
