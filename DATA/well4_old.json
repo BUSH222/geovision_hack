@@ -1,0 +1,43 @@
+{
+    "image":"well_4_old.jpg",
+    "graphs": [
+        {
+            "number":1,
+            "color": [[0, 120, 255], [0, 120, 255]],
+            "use_hsv": true,
+            "approx_hue":0,
+            "delta_hue":40,
+            "denoise":0,
+            "scale_type":1,
+            "graph_text_data":["К=10,4м", "C=4,16см", "Rw=50м", "Уд.вес р-ра-1,12-1,21"]
+        },
+        {
+            "number":2,
+            "color": [[0, 0, 0], [100, 100, 100]],
+            "use_hsv": false,
+            "approx_hue":0,
+            "delta_hue":40,
+            "denoise":0,
+            "scale_type":1,
+            "graph_text_data":["К=10,4м", "C=4,16см", "Rw=50м"]
+        }
+    ],
+    "well_info": [
+        ["STRT", ".M", 0.0000, "Start depth"],
+        ["STOP", ".M", 1920.0000, "Stop depth"],
+        ["STEP", ".M", 0.2000, "Step"], 
+        ["NULL", ".", -9999, "Null value"]
+    ],
+    "coordinates": [
+        {
+            "number":1,
+            "x":[[266, 877],[1375, 884], 0, 4.2],
+            "y":[[158, 1058],[160, 31305], 0, 1920]
+        },
+        {
+            "number":2,
+            "x":[[262, 943],[1400, 943], 0, 1400],
+            "y":[[158, 1058],[160, 31305], 0, 1920]
+        }
+    ]
+}

@@ -21,7 +21,7 @@ def get_scale_from_coords(coords1, coords2, value1, value2, log=False, convert_n
 
 
 def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, valuey1, valuey2):
-    image = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2GRAY)
+    image = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
     x0 = coordsy1[0]
     y0 = coordsy1[1]
     scaly, _ = get_scale_from_coords(coordsy1, coordsy2, valuey1, valuey2)
@@ -38,19 +38,16 @@ def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, val
         y0 += stepy
         cnt = 0
         for x in range(coordsx1[0], coordsx2[0]):
-            pixel = image[x, y0]
-            if pixel == 0:
+            pixel = list(image[y0, x])
+            if pixel == [0, 0, 0]:
                 blackx.append(x)
                 cnt += 1
-        if max(blackx) - min(blackx) < 100:
-            resblack.append(-9999)
+        if cnt == 0:
+            resblack.append([y0, -9999])
         else:
-            resblack.append(y0, sum(blackx)/cnt)
+            resblack.append([y0, round(sum(blackx)/cnt]))
     # for x axis
-    while x0 > coordsy2[0]:
-        points.append(x0)
-        x0 += stepx
-        cnt = 0
+    print(resblack)
     return resblack
     # for y in range(y0)[::-1]:
     #     cnt = 0

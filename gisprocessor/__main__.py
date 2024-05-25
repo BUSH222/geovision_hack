@@ -78,7 +78,7 @@ class GeneralConverter:
             self.b = self.start_axis_coords[f'{key}y']
             self.findata[key] = digitizer(graph, self.a[0], self.a[1], self.a[2], self.a[3],
                                           self.b[0], self.b[1], self.b[2], self.b[3])
-        lasfile = las_assembler(self.graph_data, self.well_info, self.findata)
+        lasfile = las_assembler(self.graph_text, self.well_info, self.findata)
         lasfile.write(f'{self.out_path}/out.las')
 
 
