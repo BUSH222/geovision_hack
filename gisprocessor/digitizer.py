@@ -22,12 +22,10 @@ def get_scale_from_coords(coords1, coords2, value1, value2, log=False, convert_n
 
 def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, valuey1, valuey2):
     image = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
-    x0 = coordsy1[0]
     y0 = coordsy1[1]
     scaly, _ = get_scale_from_coords(coordsy1, coordsy2, valuey1, valuey2)
     stepy = round(scaly * 0.2)
     scalx, _ = get_scale_from_coords(coordsy1, coordsy2, valuex1, valuex2)
-    stepx = round(scalx * 0.2)
     # Построчное прохождение по пикселям изображения
     resblack = []
     points = []
@@ -46,14 +44,14 @@ def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, val
             resy = 1/get_scale_from_coords(coordsy1, coordsy2, valuey1, valuey2)[0]*(y0 - coordsy1[1])
             resblack.append([round(resy, 4), -9999])
         else:
-            resx = 1/get_scale_from_coords(coordsx1, coordsx2, valuex1, valuex2)[0]*(round(sum(blackx)/cnt) - coordsx1[0])
+            resx = 1/get_scale_from_coords(coordsx1, coordsx2,
+                                           valuex1, valuex2)[0]*(round(sum(blackx)/cnt) - coordsx1[0])
             resy = 1/get_scale_from_coords(coordsy1, coordsy2, valuey1, valuey2)[0]*(y0 - coordsy1[1])
             # resblack.append([y0, round(sum(blackx)/cnt)])
             resblack.append([round(resy, 4), round(resx, 4)])
     # for x axis
     print(resblack)
     return resblack
-
 
 
 if __name__ == "__main__":
