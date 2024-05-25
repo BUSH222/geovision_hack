@@ -1,6 +1,6 @@
 let selectedFilesInfo = [];
 
-function saveFileInfo(e) {
+function handleFileSelection(e) {
     const files = e.target.files;
     if (files.length > 0) {
         Array.from(files).forEach((file, index) => {
@@ -9,39 +9,41 @@ function saveFileInfo(e) {
                 type: file.type,
                 size: file.size,
                 lastModifiedDate: file.lastModifiedDate,
-                blob: file.slice(0, file.size) // Получаем Blob объект файла
+                blob: file.slice(0, file.size)
             });
         });
+        updateFileInfo();
     }
 }
 
+function updateFileInfo() {
+    const fileInfoDiv = document.getElementById("fileInfo");
+    fileInfoDiv.innerHTML = '';
+    selectedFilesInfo.forEach((file, index) => {
+        fileInfoDiv.innerHTML += `
+        <p><strong>${file.name}</strong></p>
+        <p>Type: ${file.type}</p>
+        <p>Size: ${file.size} bytes</p>
+        <p>Changed on: ${file.lastModifiedDate.toLocaleDateString()}</p>
+        <hr>`;
+    });
+}
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
     event.preventDefault();
-
-    // Преобразование каждого Blob в строку Base64
-    const base64Files = selectedFilesInfo.map(file => {
-        return btoa(
-            new Uint8Array(file.blob).reduce(
-                (data, byte) => data + String.fromCharCode(byte),
-                ''
-            )
-        );
-    });
-
-    // Создание объекта JSON с данными файлов
     const jsonData = {
-        filesInfo: base64Files
+        filesInfo: selectedFilesInfo.map(file => ({
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            lastModifiedDate: file.lastModifiedDate,
+            content: btoa(new Uint8Array(file.blob).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+        }))
     };
-
-    // Отправка данных на сервер в формате JSON
-    fetch('/', {
+    fetch('/upload', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(jsonData)
-    })
-   .then(response => response.json())
-   .then(data => console.log(data))
-   .catch(error => console.error(error));
+    }).then(response => response.json()).then(data => console.log(data)).catch(error => console.error(error));
 });
