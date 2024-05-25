@@ -1,4 +1,4 @@
-let selectedFilesInfo = [];
+let selectedFilesInfo = []; // Инициализирует пустой массив для хранения информации о выбранных файлах.
 
 function handleFileSelection(e) {
     const files = e.target.files;
@@ -45,5 +45,7 @@ document.getElementById('uploadForm').addEventListener('submit', function(event)
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(jsonData)
-    }).then(response => response.json()).then(data => console.log(data)).catch(error => console.error(error));
+    }).then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
 });
