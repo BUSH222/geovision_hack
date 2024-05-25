@@ -21,7 +21,7 @@ def get_scale_from_coords(coords1, coords2, value1, value2, log=False, convert_n
             return x1, y1*scale*convert_number
 
 
-def digitizer(img, coordsy1, coordsy2, valuey1, valuey2, coordsx1, coordsx2, valuex1, valuex2):  # image is already a PIL image, extracted from graph_processor
+def digitizer(img, coordsx1, coordsx2, valuex1, valuex2, coordsy1, coordsy2, valuey1, valuey2):  # image is already a PIL image, extracted from graph_processor
     image = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
     height, width = img.shape
     x0 = coordsy1[0]
@@ -32,26 +32,44 @@ def digitizer(img, coordsy1, coordsy2, valuey1, valuey2, coordsx1, coordsx2, val
     step = round(scaly * 0.2)
     val0 = valuey1
     # Построчное прохождение по пикселям изображения
-    black = []
+    resblack = []
     points = []
+    blackx = []
+    # for y axis
     while y0 > coordsy2[1]:
-        points.append([y0, val0])
+        points.append(y0)
         y0 -= step
-        val0 += difv
-    for y in range(y0)[::-1]:
         cnt = 0
-        for x in range(x0 + 70, width):
-            pixel = image[y, x]
+        for x in range(coordsx1[0], coordsx2[0]):
+            pixel = image[x, y]
             if pixel == 0:
-                tempx = x
+                blackx.append(x)
                 cnt += 1
-        if cnt == 1:
-            black.append((tempx, y0))
-        elif cnt > 1:
-            print("2 точки или более")
+        if max(blackx) - min(blackx) < 100:
+            resblack.append(-9999)
         else:
-            print("0 точек")
-    return black, points
+            resblack.append(y0, sum(blackx)/cnt)
+    # for x axis
+    pointsx = []
+    while x0 < coordsy2[0]:
+        points.append(x0)
+        x0 -= step
+        cnt = 0
+    return resblack
+    # for y in range(y0)[::-1]:
+    #     cnt = 0
+    #     for x in range(x0 + 70, width):
+    #         pixel = image[y, x]
+    #         if pixel == 0:
+    #             tempx = x
+    #             cnt += 1
+    #     if cnt == 1:
+    #         black.append((tempx, y0))
+    #     elif cnt > 1:
+    #         print("2 точки или более")
+    #     else:
+    #         print("0 точек")
+    # return black, points
 
 
 if __name__ == "__main__":
