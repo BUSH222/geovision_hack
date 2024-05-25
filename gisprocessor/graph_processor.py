@@ -66,19 +66,19 @@ def graph_preprocess(image, color_range=[], use_hsv=False, approx_hue=0, delta_h
 
 
 if __name__ == "__main__":
-    # prepro1 = graph_preprocess(pil_convert('DATA/well_3_old.jpg'), [(0, 70, 255), (0, 70, 255)],
-    #                            use_hsv=True, approx_hue=0, delta_hue=40)
-    # prepro1.save('DATA/OUT/res0.png')
+    prepro1 = graph_preprocess(pil_convert('DATA/well_3_old.jpg'), [(0, 70, 255), (0, 70, 255)],
+                               use_hsv=True, approx_hue=0, delta_hue=40)
+    prepro1.save('DATA/OUT/res0.png')
 
-    # prepro2 = graph_preprocess(pil_convert('DATA/well_3_old.jpg'), [[0, 0, 0], [100, 100, 100]])
-    # prepro2.save('DATA/OUT/res1.png')
+    prepro2 = graph_preprocess(pil_convert('DATA/well_3_old.jpg'), [[0, 0, 0], [100, 100, 100]])
+    prepro2.save('DATA/OUT/res1.png')
 
-    # prepro3 = graph_preprocess(pil_convert('DATA/well_4_old.jpg'), [(0, 120, 255), (0, 120, 255)],
-    #                            use_hsv=True, approx_hue=0, delta_hue=40, denoise=2)
-    # prepro3.save('DATA/OUT/res2.png')
+    prepro3 = graph_preprocess(pil_convert('DATA/well_4_old.jpg'), [(0, 120, 255), (0, 120, 255)],
+                               use_hsv=True, approx_hue=0, delta_hue=40, denoise=2)
+    prepro3.save('DATA/OUT/res2.png')
 
-    # prepro4 = graph_preprocess(pil_convert('DATA/well_4_old.jpg'), [[0, 0, 0], [100, 100, 100]])
-    # prepro4.save('DATA/OUT/res3.png')
+    prepro4 = graph_preprocess(pil_convert('DATA/well_4_old.jpg'), [[0, 0, 0], [100, 100, 100]])
+    prepro4.save('DATA/OUT/res3.png')
 
     prepro5 = graph_preprocess(pil_convert('DATA/well_5.pdf'), [(0, 70, 255), (0, 70, 255)],
                                use_hsv=True, approx_hue=0, delta_hue=40)
