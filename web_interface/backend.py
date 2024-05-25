@@ -1,9 +1,12 @@
 import os
+import time
+
 from flask import Flask, flash, request, redirect, url_for,render_template
 from werkzeug.utils import secure_filename
 from PIL import Image
 import fitz
 import shutil
+from gisprocessor import GeneralConverter
 
 UPLOAD_FOLDER = r'D:\Новая папка'
 ALLOWED_EXTENSIONS = {'txt', 'png', 'jpg', 'jpeg','gif'}
@@ -12,20 +15,9 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+config = []
 
-def pil_convert(path, dpi=300):
-    ext = os.path.splitext(path)[-1].lower()
-    if ext == '.png' or ext == '.jpg':
-        return Image.open(path)
-    elif ext == '.pdf':
-        doc = fitz.open(path)
-        page = doc.load_page(0)
-        pixmap = page.get_pixmap(dpi=dpi)
-        width, height = pixmap.width, pixmap.height
-        img_bytes = pixmap.samples
-        shutil.move(Image.frombytes("RGB", (width, height), img_bytes),'')
-    else:
-        return None
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -33,6 +25,7 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
+
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -42,14 +35,20 @@ def upload_file():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
+
             filename = secure_filename(file.filename)
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
             if '.txt' in filename:
-                pass
+                config.append(os.path.join(UPLOAD_FOLDER,filename))
             else:
-                res = pil_convert(os.path.join(UPLOAD_FOLDER,filename))
-                print(res)
+                res = GeneralConverter(os.path.join(UPLOAD_FOLDER,filename),'D:\Новая папка (2)')
+                res.load_from_json(config[0])
+                res.run()
+
+
+
     return render_template('main_page.html')
 
 
