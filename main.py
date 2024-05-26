@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, request, redirect, send_file
+from flask import Flask, flash, request, redirect, send_file, render_template
 from werkzeug.utils import secure_filename
 from gisprocessor import GeneralConverter
 
@@ -9,13 +9,12 @@ ALLOWED_EXTENSIONS = {'txt', 'png', 'jpg', 'jpeg', 'gif'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
 config = []
 
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -41,6 +40,8 @@ def upload_file():
                 res = GeneralConverter(os.path.join(UPLOAD_FOLDER, filename), os.path.abspath('DATA2'))
                 res.load_from_json(config[0])
                 res.run()
+
+    return render_template('main_page.html')
 
 
 @app.route('/view-las', methods=['GET', 'POST'])
