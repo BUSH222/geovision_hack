@@ -20,7 +20,7 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    global config
+
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -35,12 +35,16 @@ def upload_file():
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            if '.txt' in filename or '.json' in filename:
-                config.append(os.path.join(UPLOAD_FOLDER, filename))
+            if '.txt' in filename:
+                config.append(os.path.join(UPLOAD_FOLDER,filename))
             else:
-                res = GeneralConverter(os.path.join(UPLOAD_FOLDER, filename), os.path.abspath('DATA2'))
+                res = GeneralConverter(os.path.join(UPLOAD_FOLDER,filename),'D:\Новая папка (2)')
                 res.load_from_json(config[0])
                 res.run()
+
+
+
+    return render_template('main_page.html')
 
 
 @app.route('/view-las', methods=['GET', 'POST'])
